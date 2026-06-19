@@ -1,3 +1,5 @@
+// Bot Init
+
 const { Client, GatewayIntentBits } = require('discord.js');
 const { 
     joinVoiceChannel, 
@@ -9,7 +11,6 @@ const {
 const fs = require('fs');
 const path = require('path');
 
-// Initialize the bot with necessary intents
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
