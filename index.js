@@ -25,7 +25,7 @@ const client = new Client({
 });
 
 const PREFIX = '!';
-const MUSIC_DIR = path.join(__dirname, 'music');
+const MUSIC_DIR = path.join(__dirname, 'Music Files');
 
 let playlist = [];
 let player = null;
@@ -84,7 +84,7 @@ client.on('messageCreate', async (message) => {
     // Ignore all non prefixed messages
     if (message.author.bot || !message.content.startsWith(PREFIX)) return;
 
-    const args = message.content.slice(PREFIX.length).trim().split(/+/);
+    const args = message.content.slice(PREFIX.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
 
     if (command === 'play') {
@@ -177,4 +177,4 @@ client.on('messageCreate', async (message) => {
 });
 
 // Enable "Message Content Intent" in Dev Portal for token to work
-client.login('YOUR_BOT_TOKEN_HERE');
+client.login('MTUxNzM2MjY2NjQ0NjkxNzc5Mw.GGYlQ8.Mvxlh-Y3IQ7jzMHc-cnoxnFGkQItu8IsSZ5CTU');
