@@ -28,6 +28,8 @@ const PREFIX = '?';
 const MUSIC_DIR = path.join(__dirname, 'Music Files');
 
 let playlist = [];
+let playlistOrder = [];
+let loopEnabled = false;
 let player = null;
 let connection = null;
 let currentTextChannel = null;
@@ -56,9 +58,13 @@ function loadShuffledPlaylist() {
 
 function playNext() {
     if (playlist.length === 0) {
-        if (client.user) client.user.setPresence({ activities: [] });
-        if (currentTextChannel) currentTextChannel.send("You have reached the end... for now");
-        return;
+        if (loopEnabled && playlistOrder.length > 0) {
+            playlist = playlistOrder.slice();
+        } else {
+            if (client.user) client.user.setPresence({ activities: [] });
+            if (currentTextChannel) currentTextChannel.send("You have reached the end... for now");
+            return;
+        }
     }
 
     const nextSongPath = playlist.shift();
@@ -93,6 +99,7 @@ client.on('messageCreate', async (message) => {
 
         currentTextChannel = message.channel;
         playlist = loadShuffledPlaylist();
+        playlistOrder = playlist.slice();
 
         if (playlist.length === 0) {
             return message.reply("The folder containing music is empty! Put some files there first.");
@@ -134,8 +141,36 @@ client.on('messageCreate', async (message) => {
         }
     }
 
+    if (command === 'pause') {
+        if (player && player.state.status === AudioPlayerStatus.Playing) {
+            player.pause();
+            message.channel.send("Playback paused.");
+        } else if (player && player.state.status === AudioPlayerStatus.Paused) {
+            message.reply("Playback is already paused.");
+        } else {
+            message.reply("Nothing is playing right now.");
+        }
+    }
+
+    if (command === 'resume') {
+        if (player && player.state.status === AudioPlayerStatus.Paused) {
+            player.unpause();
+            message.channel.send("Playback resumed.");
+        } else if (player && player.state.status === AudioPlayerStatus.Playing) {
+            message.reply("Playback is already playing.");
+        } else {
+            message.reply("Nothing is paused right now.");
+        }
+    }
+
+    if (command === 'loop') {
+        loopEnabled = !loopEnabled;
+        message.channel.send(`Playlist looping ${loopEnabled ? 'enabled' : 'disabled'}.`);
+    }
+
     if (command === 'stop') {
         playlist = [];
+        playlistOrder = [];
         if (client.user) client.user.setPresence({ activities: [] });
         if (player) player.stop();
         if (connection) {
