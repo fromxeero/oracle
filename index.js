@@ -146,7 +146,7 @@ client.on('messageCreate', async (message) => {
         }
 
         connection.subscribe(player);
-        message.channel.send(`Loaded and shuffled **${playlist.length}** songs. Playback Starting...`);
+        message.channel.send(`<:oracle:1571594132789534821> Loaded and shuffled **${playlist.length}** songs. Playback Starting...`);
         playNext();
     }
 
