@@ -33,6 +33,7 @@ let loopEnabled = false;
 let player = null;
 let connection = null;
 let currentTextChannel = null;
+let currentVoiceChannel = null;
 
 // Make sure the music is actually there
 
@@ -54,6 +55,16 @@ function loadShuffledPlaylist() {
     return files;
 }
 
+function setVoiceChannelStatus(channel, status) {
+    if (!channel) return;
+
+    client.rest.put(`/channels/${channel.id}/voice-status`, {
+        body: { status }
+    }).catch(error => {
+        console.error(`Failed to update voice channel status: ${error.message}`);
+    });
+}
+
 // Play next song, if no more then message that out of songs
 
 function playNext() {
@@ -62,6 +73,7 @@ function playNext() {
             playlist = playlistOrder.slice();
         } else {
             if (client.user) client.user.setPresence({ activities: [] });
+            setVoiceChannelStatus(currentVoiceChannel, null);
             if (currentTextChannel) currentTextChannel.send("You have reached the end... for now");
             return;
         }
@@ -70,6 +82,7 @@ function playNext() {
     const nextSongPath = playlist.shift();
     const songName = path.basename(nextSongPath, path.extname(nextSongPath));
     if (client.user) client.user.setActivity(songName);
+    setVoiceChannelStatus(currentVoiceChannel, songName);
 
     // Inline vol enable
     currentResource = createAudioResource(nextSongPath, { inlineVolume: true });
@@ -104,6 +117,11 @@ client.on('messageCreate', async (message) => {
         if (playlist.length === 0) {
             return message.reply("The folder containing music is empty! Put some files there first.");
         }
+
+        if (currentVoiceChannel && currentVoiceChannel.id !== voiceChannel.id) {
+            setVoiceChannelStatus(currentVoiceChannel, null);
+        }
+        currentVoiceChannel = voiceChannel;
 
         // vc connect
         connection = joinVoiceChannel({
@@ -172,6 +190,8 @@ client.on('messageCreate', async (message) => {
         playlist = [];
         playlistOrder = [];
         if (client.user) client.user.setPresence({ activities: [] });
+        setVoiceChannelStatus(currentVoiceChannel, null);
+        currentVoiceChannel = null;
         if (player) player.stop();
         if (connection) {
             connection.destroy();
