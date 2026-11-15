@@ -74,7 +74,7 @@ function playNext() {
         } else {
             if (client.user) client.user.setPresence({ activities: [] });
             setVoiceChannelStatus(currentVoiceChannel, null);
-            if (currentTextChannel) currentTextChannel.send("You have reached the end... for now");
+            if (currentTextChannel) currentTextChannel.send("You have reached the end... for now <:ohmygod:1571594146991443972>");
             return;
         }
     }
