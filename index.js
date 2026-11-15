@@ -74,7 +74,7 @@ function playNext() {
         } else {
             if (client.user) client.user.setPresence({ activities: [] });
             setVoiceChannelStatus(currentVoiceChannel, null);
-            if (currentTextChannel) currentTextChannel.send("You have reached the end... for now <:ohmygod:1571594146991443972>");
+            if (currentTextChannel) currentTextChannel.send("<:wave:1571594141975187596> You have reached the end... for now <:ohmygod:1571594146991443972>");
             return;
         }
     }
@@ -107,7 +107,7 @@ client.on('messageCreate', async (message) => {
     if (command === 'play') {
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) {
-            return message.reply("You need to be in VC to use this command!");
+            return message.reply("<:sideposture:1571594144252559552> You need to be in VC to use this command!");
         }
 
         currentTextChannel = message.channel;
@@ -115,7 +115,7 @@ client.on('messageCreate', async (message) => {
         playlistOrder = playlist.slice();
 
         if (playlist.length === 0) {
-            return message.reply("The folder containing music is empty! Put some files there first.");
+            return message.reply("<:ohmygod:1571594146991443972> The folder containing music is empty! Put some files there first.");
         }
 
         if (currentVoiceChannel && currentVoiceChannel.id !== voiceChannel.id) {
@@ -152,7 +152,7 @@ client.on('messageCreate', async (message) => {
 
     if (command === 'skip') {
         if (player && player.state.status !== AudioPlayerStatus.Idle) {
-            message.channel.send("Skipped current track.");
+            message.channel.send("<a:vibe:1571594140016185486> Skipped current track.");
             player.stop(); // Idle State
         } else {
             message.reply("Nothing is playing right now.");
@@ -162,28 +162,28 @@ client.on('messageCreate', async (message) => {
     if (command === 'pause') {
         if (player && player.state.status === AudioPlayerStatus.Playing) {
             player.pause();
-            message.channel.send("Playback paused.");
+            message.channel.send("<:shrug:1571594137969496095> Playback paused.");
         } else if (player && player.state.status === AudioPlayerStatus.Paused) {
-            message.reply("Playback is already paused.");
+            message.reply("<:uwu:1571594134995865610> Playback is already paused.");
         } else {
-            message.reply("Nothing is playing right now.");
+            message.reply("<:ohmygod:1571594146991443972> Nothing is playing right now.");
         }
     }
 
     if (command === 'resume') {
         if (player && player.state.status === AudioPlayerStatus.Paused) {
             player.unpause();
-            message.channel.send("Playback resumed.");
+            message.channel.send("<:uwu:1571594134995865610> Playback resumed.");
         } else if (player && player.state.status === AudioPlayerStatus.Playing) {
-            message.reply("Playback is already playing.");
+            message.reply("<:smug:1571594136413544448> Playback is already playing.");
         } else {
-            message.reply("Nothing is paused right now.");
+            message.reply("<:oracle:1571594132789534821> Nothing is paused right now.");
         }
     }
 
     if (command === 'loop') {
         loopEnabled = !loopEnabled;
-        message.channel.send(`Playlist looping ${loopEnabled ? 'enabled' : 'disabled'}.`);
+        message.channel.send(`<a:vibe:1571594140016185486> Playlist looping ${loopEnabled ? 'enabled' : 'disabled'}.`);
     }
 
     if (command === 'stop') {
@@ -196,9 +196,9 @@ client.on('messageCreate', async (message) => {
         if (connection) {
             connection.destroy();
             connection = null;
-            message.channel.send("Stopped playback and left the voice channel.");
+            message.channel.send("<:wave:1571594141975187596> Stopped playback and left the voice channel.");
         } else {
-            message.reply("I'm not connected to a voice channel.");
+            message.reply("<:smug:1571594136413544448>I'm not connected to a voice channel.");
         }
     }
 
@@ -208,14 +208,14 @@ client.on('messageCreate', async (message) => {
 
         // Print current volume when no amount given
         if (!volArg) {
-            return message.reply('Current volume is **${Math.round(globalVolume * 100)}%**`');
+            return message.reply('<:sideposture:1571594144252559552> Current volume is **${Math.round(globalVolume * 100)}%**`');
         }
 
         const volumePercent = parseInt(volArg, 10);
 
         // Validating input
         if (isNaN(volumePercent) || volumePercent < 0 || volumePercent > 100) {
-            return message.reply("Not a valid volume level");
+            return message.reply("<:smug:1571594136413544448> Not a valid volume level");
         }
 
         // int to float scale
@@ -226,7 +226,7 @@ client.on('messageCreate', async (message) => {
             currentResource.volume.setVolume(globalVolume);
         }
 
-        return message.channel.send(`Volume set to **${volumePercent}%**`);
+        return message.channel.send(`<a:vibe:1571594140016185486> Volume set to **${volumePercent}%**`);
     }
 });
 
