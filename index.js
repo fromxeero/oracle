@@ -56,16 +56,14 @@ function loadShuffledPlaylist() {
 
 function playNext() {
     if (playlist.length === 0) {
+        if (client.user) client.user.setPresence({ activities: [] });
         if (currentTextChannel) currentTextChannel.send("You have reached the end... for now");
         return;
     }
 
     const nextSongPath = playlist.shift();
-    const songName = path.basename(nextSongPath);
-
-    if (currentTextChannel) {
-        currentTextChannel.send(`Now playing: **${songName}**`);
-    }
+    const songName = path.basename(nextSongPath, path.extname(nextSongPath));
+    if (client.user) client.user.setActivity(songName);
 
     // Inline vol enable
     currentResource = createAudioResource(nextSongPath, { inlineVolume: true });
@@ -138,6 +136,7 @@ client.on('messageCreate', async (message) => {
 
     if (command === 'stop') {
         playlist = [];
+        if (client.user) client.user.setPresence({ activities: [] });
         if (player) player.stop();
         if (connection) {
             connection.destroy();
@@ -177,4 +176,4 @@ client.on('messageCreate', async (message) => {
 });
 
 // Enable "Message Content Intent" in Dev Portal for token to work
-client.login('INSERTTOKENHERE');
+client.login('YOUR_BOT_TOKEN_HERE');
